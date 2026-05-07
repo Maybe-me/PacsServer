@@ -66,7 +66,8 @@ function buildFrameUri(instance, frameNumber) {
   if (!frameNumber || frameNumber <= 1 && (!instance?.numberOfFrames || instance.numberOfFrames <= 1)) {
     return resolvedUri
   }
-  return `${resolvedUri}&frame=${frameNumber}`
+  const separator = resolvedUri.includes('?') ? '&' : '?'
+  return `${resolvedUri}${separator}frame=${frameNumber}`
 }
 
 export function buildWadoImageId(instance, frameNumber = 1) {
