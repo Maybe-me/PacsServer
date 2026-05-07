@@ -9,8 +9,16 @@ import org.dcm4che3.util.TagUtils;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public final class Dcm4cheAttributesBridge {
+
+    private static final String PRESENCE_MARKER = "__present__";
+    private static final Set<Integer> PRESENCE_ONLY_TAGS = Set.of(
+            Tag.PixelData,
+            Tag.FloatPixelData,
+            Tag.DoubleFloatPixelData
+    );
 
     private static final Map<String, Integer> ALIASES = Map.ofEntries(
             Map.entry("patientId", Tag.PatientID),
@@ -46,6 +54,10 @@ public final class Dcm4cheAttributesBridge {
         try {
             attributes.accept((attrs, tag, vr, value) -> {
                 if (vr == VR.SQ) {
+                    return true;
+                }
+                if (PRESENCE_ONLY_TAGS.contains(tag) && attrs.contains(tag)) {
+                    mapped.put(TagUtils.toHexString(tag).toUpperCase(Locale.ROOT), PRESENCE_MARKER);
                     return true;
                 }
                 String stringValue = attrs.getString(tag);
@@ -99,7 +111,7 @@ public final class Dcm4cheAttributesBridge {
                 continue;
             }
             Integer tag = resolveTag(entry.getKey());
-            if (tag == null || tag == Tag.TransferSyntaxUID) {
+            if (tag == null || tag == Tag.TransferSyntaxUID || PRESENCE_ONLY_TAGS.contains(tag) || PRESENCE_MARKER.equals(entry.getValue())) {
                 continue;
             }
             attributes.setString(tag, vrOf(tag), entry.getValue());
