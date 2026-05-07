@@ -99,6 +99,8 @@ public class ViewerRestController {
         double windowCenter = parseDoubleTag(instance, "00281050");
         double windowWidth = parseDoubleTag(instance, "00281051");
         String photometricInterpretation = parseStringTag(instance, "00280004");
+        boolean hasFloatPixelData = hasTag(instance, "7FE00008");
+        boolean hasDoubleFloatPixelData = hasTag(instance, "7FE00009");
         return Map.ofEntries(
                 Map.entry("sopInstanceUid", instance.sopInstanceUid()),
                 Map.entry("instanceNumber", instance.instanceNumber() == null ? 0 : instance.instanceNumber()),
@@ -117,8 +119,10 @@ public class ViewerRestController {
                 Map.entry("photometricInterpretation", photometricInterpretation),
                 Map.entry("windowCenter", windowCenter),
                 Map.entry("windowWidth", windowWidth),
+                Map.entry("hasFloatPixelData", hasFloatPixelData),
+                Map.entry("hasDoubleFloatPixelData", hasDoubleFloatPixelData),
                 Map.entry("renderable", rows > 0 && columns > 0),
-                Map.entry("wadoUri", "/wado-rs/studies/" + studyUid + "/series/" + seriesUid + "/instances/" + instance.sopInstanceUid())
+                Map.entry("wadoUri", "/wado-rs/studies/" + studyUid + "/series/" + seriesUid + "/instances/" + instance.sopInstanceUid() + "?contentType=application%2Fdicom")
         );
     }
 
@@ -159,5 +163,9 @@ public class ViewerRestController {
         }
         String value = instance.extraTags().get(tag);
         return value == null ? "" : value.trim();
+    }
+
+    private boolean hasTag(PacsInstance instance, String tag) {
+        return instance.extraTags() != null && instance.extraTags().containsKey(tag);
     }
 }

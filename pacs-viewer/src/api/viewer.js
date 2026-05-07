@@ -66,8 +66,7 @@ function buildFrameUri(instance, frameNumber) {
   if (!frameNumber || frameNumber <= 1 && (!instance?.numberOfFrames || instance.numberOfFrames <= 1)) {
     return resolvedUri
   }
-  const separator = resolvedUri.includes('?') ? '&' : '?'
-  return `${resolvedUri}${separator}frame=${frameNumber}`
+  return `${resolvedUri}&frame=${frameNumber}`
 }
 
 export function buildWadoImageId(instance, frameNumber = 1) {
@@ -99,6 +98,20 @@ export function resolveWadoUri(instance, frameNumber = null) {
 }
 
 export function getViewerCompatibility(instance) {
+  if (instance?.hasDoubleFloatPixelData) {
+    return {
+      displayable: false,
+      reason: 'Double float pixel data is not supported by the stack viewer.',
+    }
+  }
+
+  if (instance?.hasFloatPixelData) {
+    return {
+      displayable: false,
+      reason: 'Float pixel data is not supported by the stack viewer.',
+    }
+  }
+
   if (!instance?.renderable) {
     return {
       displayable: false,

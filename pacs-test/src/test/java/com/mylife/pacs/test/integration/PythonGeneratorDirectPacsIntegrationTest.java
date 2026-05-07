@@ -119,6 +119,9 @@ class PythonGeneratorDirectPacsIntegrationTest {
                 .andExpect(jsonPath("$[?(@.sopInstanceUid=='" + sopUid + "')].bitsStored", hasItem(bitsStored)))
                 .andExpect(jsonPath("$[?(@.sopInstanceUid=='" + sopUid + "')].highBit", hasItem(highBit)))
                 .andExpect(jsonPath("$[?(@.sopInstanceUid=='" + sopUid + "')].photometricInterpretation", hasItem(photometricInterpretation)))
+                .andExpect(jsonPath("$[?(@.sopInstanceUid=='" + sopUid + "')].hasFloatPixelData", hasItem(false)))
+                .andExpect(jsonPath("$[?(@.sopInstanceUid=='" + sopUid + "')].hasDoubleFloatPixelData", hasItem(false)))
+                .andExpect(jsonPath("$[?(@.sopInstanceUid=='" + sopUid + "')].wadoUri", hasItem("/wado-rs/studies/" + studyUid + "/series/" + seriesUid + "/instances/" + sopUid + "?contentType=application%2Fdicom")))
                 .andExpect(jsonPath("$[?(@.sopInstanceUid=='" + sopUid + "')].renderable", hasItem(true)));
     }
 
