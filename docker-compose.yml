@@ -1,0 +1,37 @@
+services:
+  pacs-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pacs-server
+    environment:
+      SPRING_PROFILES_ACTIVE: postgresql
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pacs
+      SPRING_DATASOURCE_USERNAME: pacs
+      SPRING_DATASOURCE_PASSWORD: pacs
+      DICOM_PACS_LOCAL_AET: MY_PACS
+      DICOM_PACS_LOCAL_PORT: 11112
+      DICOM_PACS_STORAGE_DIR: /data/storage
+    ports:
+      - "8080:8080"
+      - "11112:11112"
+    volumes:
+      - pacs-storage:/data/storage
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    container_name: pacs-postgres
+    environment:
+      POSTGRES_DB: pacs
+      POSTGRES_USER: pacs
+      POSTGRES_PASSWORD: pacs
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  pacs-storage:
+  postgres-data:

@@ -1,0 +1,16 @@
+sample-library/downloads/
+sample-library/templates/intake/
+sample-library/templates/curated/
+sample-library/templates/generated/
+sample-library/cache/
+dicom-generator/.venv/
+dicom-generator/**/__pycache__/
+dicom-generator/output/
+/.data/
+/.idea/
+/.tmp/
+/pacs-viewer/dist/
+/pacs-viewer/node_modules/
+
+# Maven build output
+**/target/

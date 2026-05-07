@@ -1,0 +1,4 @@
+dicom:
+  pacs:
+    local-port: 0
+    storage-dir: target\test-storage

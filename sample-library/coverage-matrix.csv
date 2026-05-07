@@ -1,0 +1,24 @@
+sample_id,source_id,modality,object_type,frame_type,transfer_syntax_family,compression,automation_tier,intended_use,acquisition_mode
+pydicom-ct-small,pydicom-test-files,CT,CT Image Storage,single-frame,little-endian,uncompressed,auto,"pacs-ingest|qido-wado-smoke|generator-template",raw-file
+pydicom-explvr-big-end,pydicom-test-files,OT,Transfer Syntax Fixture,single-frame,big-endian-explicit-vr,uncompressed,auto,"parser-regression|transfer-syntax-coverage",raw-file
+pydicom-jpeg-lossy,pydicom-test-files,MR,Compressed Image Fixture,single-frame,jpeg-baseline,jpeg-lossy,auto,"codec-regression|viewer-compatibility",raw-file
+pydicom-jpeg2000,pydicom-test-files,MR,Compressed Image Fixture,single-frame,jpeg2000,jpeg2000-lossless,auto,"codec-regression|viewer-compatibility",raw-file
+pydicom-jpegls-near-lossless-08,pydicom-test-files,OT,Compressed Image Fixture,single-frame,jpeg-ls,jpeg-ls-near-lossless,auto,"codec-regression|transfer-syntax-coverage",raw-file
+pydicom-sc-rgb-jpeg,pydicom-test-files,SC,Secondary Capture Image Storage,single-frame,jpeg-baseline,jpeg-lossy-rgb,auto,"color-image-coverage|viewer-compatibility|generator-template",raw-file
+highdicom-ct-image,highdicom-test-files,CT,CT Image Storage,single-frame,little-endian,uncompressed,auto,"pacs-ingest|generator-template",raw-file
+highdicom-dx-image,highdicom-test-files,DX,Digital X-Ray Image Storage,single-frame,little-endian,uncompressed,auto,"viewer-compatibility|generator-template",raw-file
+highdicom-seg-ct-binary,highdicom-test-files,SEG,Segmentation Storage,multi-frame,little-endian,uncompressed,auto,"advanced-object-coverage|future-viewer-overlay",raw-file
+highdicom-slide-microscopy,highdicom-test-files,SM,VL Whole Slide Microscopy Image Storage,multi-frame,little-endian,uncompressed,auto,"object-type-coverage|non-radiology-compatibility",raw-file
+highdicom-sr-document,highdicom-test-files,SR,Comprehensive SR Storage,non-pixel,little-endian,n/a,auto,"advanced-object-coverage|future-report-display",raw-file
+cornerstone-ct-implicit-le,cornerstone3d-test-images,CT,CT Image Storage,single-frame,little-endian-implicit-vr,uncompressed,auto,"viewer-smoke|transfer-syntax-coverage",raw-file
+cornerstone-ct-explicit-le,cornerstone3d-test-images,CT,CT Image Storage,single-frame,little-endian-explicit-vr,uncompressed,auto,"viewer-smoke|transfer-syntax-coverage",raw-file
+cornerstone-ct-big-endian-explicit,cornerstone3d-test-images,CT,CT Image Storage,single-frame,big-endian-explicit-vr,uncompressed,auto,"viewer-smoke|transfer-syntax-coverage",raw-file
+cornerstone-ct-jpeg2000-lossless,cornerstone3d-test-images,CT,CT Image Storage,single-frame,jpeg2000,jpeg2000-lossless,auto,"viewer-smoke|codec-regression",raw-file
+cornerstone-ct-jpegls-lossless,cornerstone3d-test-images,CT,CT Image Storage,single-frame,jpeg-ls,jpeg-ls-lossless,auto,"viewer-smoke|codec-regression",raw-file
+cornerstone-ct-rle-lossless,cornerstone3d-test-images,CT,CT Image Storage,single-frame,rle,rle-lossless,auto,"viewer-smoke|codec-regression",raw-file
+open-dicom-siemens-mprage-0,open-dicom-study-repos,MR,MR Study,series,repo-study,mixed,manual,"generator-template|viewer-layout-testing",manual-repo-study
+open-dicom-siemens-flair-0,open-dicom-study-repos,MR,MR Study,series,repo-study,mixed,manual,"generator-template|viewer-layout-testing",manual-repo-study
+tcia-psma-pet-ct-lesions,tcia-public-collections,CT/PT/SEG,PET-CT Study with SEG,series,collection,mixed,manual,"generator-template|advanced-object-coverage",manual-collection
+tcia-cfb-gbm,tcia-public-collections,MR/CT/RTDOSE,MR-CT-RT Collection,series,collection,mixed,manual,"radiotherapy-coverage|generator-template",manual-collection
+tcia-ahep0731,tcia-public-collections,CT/US/MR/PT/XA,Multi-modality Collection,series,collection,mixed,manual,"cross-modality-template-source|viewer-regression",manual-collection
+ohif-demo-dicomweb,ohif-demo-data,mixed,DICOMweb demo studies,series,dicomweb,mixed,manual,"viewer-regression|dicomweb-integration",manual-dicomweb

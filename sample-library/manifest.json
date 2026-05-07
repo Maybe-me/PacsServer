@@ -1,0 +1,465 @@
+{
+  "version": 1,
+  "libraryName": "PACS public sample library",
+  "downloadRoot": "sample-library\\downloads",
+  "templateRoots": {
+    "intake": "sample-library\\templates\\intake",
+    "curated": "sample-library\\templates\\curated",
+    "generated": "sample-library\\templates\\generated"
+  },
+  "sources": [
+    {
+      "id": "pydicom-test-files",
+      "name": "pydicom test files",
+      "homepage": "https://github.com/pydicom/pydicom/tree/main/src/pydicom/data/test_files",
+      "license": "MIT",
+      "automationTier": "auto",
+      "notes": "Baseline parser, transfer syntax, and secondary capture fixtures suitable for PACS ingest and codec coverage.",
+      "samples": [
+        {
+          "id": "pydicom-ct-small",
+          "fileName": "pydicom-CT_small.dcm",
+          "modality": "CT",
+          "objectType": "CT Image Storage",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "little-endian",
+          "compression": "uncompressed",
+          "intendedUse": [
+            "pacs-ingest",
+            "qido-wado-smoke",
+            "generator-template"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/pydicom/pydicom/main/src/pydicom/data/test_files/CT_small.dcm"
+          }
+        },
+        {
+          "id": "pydicom-explvr-big-end",
+          "fileName": "pydicom-ExplVR_BigEnd.dcm",
+          "modality": "OT",
+          "objectType": "Transfer Syntax Fixture",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "big-endian-explicit-vr",
+          "compression": "uncompressed",
+          "intendedUse": [
+            "parser-regression",
+            "transfer-syntax-coverage"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/pydicom/pydicom/main/src/pydicom/data/test_files/ExplVR_BigEnd.dcm"
+          }
+        },
+        {
+          "id": "pydicom-jpeg-lossy",
+          "fileName": "pydicom-JPEG-lossy.dcm",
+          "modality": "MR",
+          "objectType": "Compressed Image Fixture",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "jpeg-baseline",
+          "compression": "jpeg-lossy",
+          "intendedUse": [
+            "codec-regression",
+            "viewer-compatibility"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/pydicom/pydicom/main/src/pydicom/data/test_files/JPEG-lossy.dcm"
+          }
+        },
+        {
+          "id": "pydicom-jpeg2000",
+          "fileName": "pydicom-JPEG2000.dcm",
+          "modality": "MR",
+          "objectType": "Compressed Image Fixture",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "jpeg2000",
+          "compression": "jpeg2000-lossless",
+          "intendedUse": [
+            "codec-regression",
+            "viewer-compatibility"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/pydicom/pydicom/main/src/pydicom/data/test_files/JPEG2000.dcm"
+          }
+        },
+        {
+          "id": "pydicom-jpegls-near-lossless-08",
+          "fileName": "pydicom-JPEGLSNearLossless_08.dcm",
+          "modality": "OT",
+          "objectType": "Compressed Image Fixture",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "jpeg-ls",
+          "compression": "jpeg-ls-near-lossless",
+          "intendedUse": [
+            "codec-regression",
+            "transfer-syntax-coverage"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/pydicom/pydicom/main/src/pydicom/data/test_files/JPEGLSNearLossless_08.dcm"
+          }
+        },
+        {
+          "id": "pydicom-sc-rgb-jpeg",
+          "fileName": "pydicom-SC_rgb_jpeg.dcm",
+          "modality": "SC",
+          "objectType": "Secondary Capture Image Storage",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "jpeg-baseline",
+          "compression": "jpeg-lossy-rgb",
+          "intendedUse": [
+            "color-image-coverage",
+            "viewer-compatibility",
+            "generator-template"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/pydicom/pydicom/main/src/pydicom/data/test_files/SC_rgb_jpeg.dcm"
+          }
+        }
+      ]
+    },
+    {
+      "id": "highdicom-test-files",
+      "name": "highdicom test files",
+      "homepage": "https://github.com/ImagingDataCommons/highdicom/tree/master/data/test_files",
+      "license": "MIT",
+      "automationTier": "auto",
+      "notes": "Advanced DICOM objects for segmentation, SR, digital radiography, and slide microscopy coverage.",
+      "samples": [
+        {
+          "id": "highdicom-ct-image",
+          "fileName": "highdicom-ct_image.dcm",
+          "modality": "CT",
+          "objectType": "CT Image Storage",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "little-endian",
+          "compression": "uncompressed",
+          "intendedUse": [
+            "pacs-ingest",
+            "generator-template"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/ImagingDataCommons/highdicom/master/data/test_files/ct_image.dcm"
+          }
+        },
+        {
+          "id": "highdicom-dx-image",
+          "fileName": "highdicom-dx_image.dcm",
+          "modality": "DX",
+          "objectType": "Digital X-Ray Image Storage",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "little-endian",
+          "compression": "uncompressed",
+          "intendedUse": [
+            "viewer-compatibility",
+            "generator-template"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/ImagingDataCommons/highdicom/master/data/test_files/dx_image.dcm"
+          }
+        },
+        {
+          "id": "highdicom-seg-ct-binary",
+          "fileName": "highdicom-seg_image_ct_binary.dcm",
+          "modality": "SEG",
+          "objectType": "Segmentation Storage",
+          "frameType": "multi-frame",
+          "transferSyntaxFamily": "little-endian",
+          "compression": "uncompressed",
+          "intendedUse": [
+            "advanced-object-coverage",
+            "future-viewer-overlay"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/ImagingDataCommons/highdicom/master/data/test_files/seg_image_ct_binary.dcm"
+          }
+        },
+        {
+          "id": "highdicom-slide-microscopy",
+          "fileName": "highdicom-sm_image.dcm",
+          "modality": "SM",
+          "objectType": "VL Whole Slide Microscopy Image Storage",
+          "frameType": "multi-frame",
+          "transferSyntaxFamily": "little-endian",
+          "compression": "uncompressed",
+          "intendedUse": [
+            "object-type-coverage",
+            "non-radiology-compatibility"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/ImagingDataCommons/highdicom/master/data/test_files/sm_image.dcm"
+          }
+        },
+        {
+          "id": "highdicom-sr-document",
+          "fileName": "highdicom-sr_document.dcm",
+          "modality": "SR",
+          "objectType": "Comprehensive SR Storage",
+          "frameType": "non-pixel",
+          "transferSyntaxFamily": "little-endian",
+          "compression": "n/a",
+          "intendedUse": [
+            "advanced-object-coverage",
+            "future-report-display"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/ImagingDataCommons/highdicom/master/data/test_files/sr_document.dcm"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cornerstone3d-test-images",
+      "name": "cornerstone3D test images",
+      "homepage": "https://github.com/cornerstonejs/cornerstone3D/tree/main/packages/dicomImageLoader/testImages",
+      "license": "MIT",
+      "automationTier": "auto",
+      "notes": "Focused on transfer syntax compatibility that will be reused by the Cornerstone3 viewer phase.",
+      "samples": [
+        {
+          "id": "cornerstone-ct-implicit-le",
+          "fileName": "cornerstone-CTImage-implicit-le.dcm",
+          "modality": "CT",
+          "objectType": "CT Image Storage",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "little-endian-implicit-vr",
+          "compression": "uncompressed",
+          "intendedUse": [
+            "viewer-smoke",
+            "transfer-syntax-coverage"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/cornerstonejs/cornerstone3D/main/packages/dicomImageLoader/testImages/CTImage.dcm_LittleEndianImplicitTransferSyntax_1.2.840.10008.1.2.dcm"
+          }
+        },
+        {
+          "id": "cornerstone-ct-explicit-le",
+          "fileName": "cornerstone-CTImage-explicit-le.dcm",
+          "modality": "CT",
+          "objectType": "CT Image Storage",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "little-endian-explicit-vr",
+          "compression": "uncompressed",
+          "intendedUse": [
+            "viewer-smoke",
+            "transfer-syntax-coverage"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/cornerstonejs/cornerstone3D/main/packages/dicomImageLoader/testImages/CTImage.dcm_LittleEndianExplicitTransferSyntax_1.2.840.10008.1.2.1.dcm"
+          }
+        },
+        {
+          "id": "cornerstone-ct-big-endian-explicit",
+          "fileName": "cornerstone-CTImage-big-endian-explicit.dcm",
+          "modality": "CT",
+          "objectType": "CT Image Storage",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "big-endian-explicit-vr",
+          "compression": "uncompressed",
+          "intendedUse": [
+            "viewer-smoke",
+            "transfer-syntax-coverage"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/cornerstonejs/cornerstone3D/main/packages/dicomImageLoader/testImages/CTImage.dcm_BigEndianExplicitTransferSyntax_1.2.840.10008.1.2.2.dcm"
+          }
+        },
+        {
+          "id": "cornerstone-ct-jpeg2000-lossless",
+          "fileName": "cornerstone-CTImage-jpeg2000-lossless.dcm",
+          "modality": "CT",
+          "objectType": "CT Image Storage",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "jpeg2000",
+          "compression": "jpeg2000-lossless",
+          "intendedUse": [
+            "viewer-smoke",
+            "codec-regression"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/cornerstonejs/cornerstone3D/main/packages/dicomImageLoader/testImages/CTImage.dcm_JPEG2000LosslessOnlyTransferSyntax_1.2.840.10008.1.2.4.90.dcm"
+          }
+        },
+        {
+          "id": "cornerstone-ct-jpegls-lossless",
+          "fileName": "cornerstone-CTImage-jpegls-lossless.dcm",
+          "modality": "CT",
+          "objectType": "CT Image Storage",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "jpeg-ls",
+          "compression": "jpeg-ls-lossless",
+          "intendedUse": [
+            "viewer-smoke",
+            "codec-regression"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/cornerstonejs/cornerstone3D/main/packages/dicomImageLoader/testImages/CTImage.dcm_JPEGLSLosslessTransferSyntax_1.2.840.10008.1.2.4.80.dcm"
+          }
+        },
+        {
+          "id": "cornerstone-ct-rle-lossless",
+          "fileName": "cornerstone-CTImage-rle-lossless.dcm",
+          "modality": "CT",
+          "objectType": "CT Image Storage",
+          "frameType": "single-frame",
+          "transferSyntaxFamily": "rle",
+          "compression": "rle-lossless",
+          "intendedUse": [
+            "viewer-smoke",
+            "codec-regression"
+          ],
+          "acquisition": {
+            "mode": "raw-file",
+            "url": "https://raw.githubusercontent.com/cornerstonejs/cornerstone3D/main/packages/dicomImageLoader/testImages/CTImage.dcm_RLELosslessTransferSyntax_1.2.840.10008.1.2.5.dcm"
+          }
+        }
+      ]
+    },
+    {
+      "id": "open-dicom-study-repos",
+      "name": "open-dicom study repositories",
+      "homepage": "https://github.com/orgs/open-dicom/repositories",
+      "license": "Repository-specific open usage",
+      "automationTier": "manual",
+      "notes": "Study-sized repositories that are useful as template sources when we need full MR series rather than isolated fixtures.",
+      "samples": [
+        {
+          "id": "open-dicom-siemens-mprage-0",
+          "fileName": "open-dicom-siemens-mprage-0",
+          "modality": "MR",
+          "objectType": "MR Study",
+          "frameType": "series",
+          "transferSyntaxFamily": "repo-study",
+          "compression": "mixed",
+          "intendedUse": [
+            "generator-template",
+            "viewer-layout-testing"
+          ],
+          "acquisition": {
+            "mode": "manual-repo-study",
+            "url": "https://github.com/open-dicom/siemens_mprage_0"
+          }
+        },
+        {
+          "id": "open-dicom-siemens-flair-0",
+          "fileName": "open-dicom-siemens-flair-0",
+          "modality": "MR",
+          "objectType": "MR Study",
+          "frameType": "series",
+          "transferSyntaxFamily": "repo-study",
+          "compression": "mixed",
+          "intendedUse": [
+            "generator-template",
+            "viewer-layout-testing"
+          ],
+          "acquisition": {
+            "mode": "manual-repo-study",
+            "url": "https://github.com/open-dicom/siemens_flair_0"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tcia-public-collections",
+      "name": "TCIA public collections",
+      "homepage": "https://www.cancerimagingarchive.net/collections/",
+      "license": "Collection-specific public research terms",
+      "automationTier": "manual",
+      "notes": "Primary source for broader modality and advanced object coverage once we move from lightweight fixtures to template-grade studies.",
+      "samples": [
+        {
+          "id": "tcia-psma-pet-ct-lesions",
+          "fileName": "tcia-psma-pet-ct-lesions",
+          "modality": "CT/PT/SEG",
+          "objectType": "PET-CT Study with SEG",
+          "frameType": "series",
+          "transferSyntaxFamily": "collection",
+          "compression": "mixed",
+          "intendedUse": [
+            "generator-template",
+            "advanced-object-coverage"
+          ],
+          "acquisition": {
+            "mode": "manual-collection",
+            "url": "https://www.cancerimagingarchive.net/collection/psma-pet-ct-lesions/"
+          }
+        },
+        {
+          "id": "tcia-cfb-gbm",
+          "fileName": "tcia-cfb-gbm",
+          "modality": "MR/CT/RTDOSE",
+          "objectType": "MR-CT-RT Collection",
+          "frameType": "series",
+          "transferSyntaxFamily": "collection",
+          "compression": "mixed",
+          "intendedUse": [
+            "radiotherapy-coverage",
+            "generator-template"
+          ],
+          "acquisition": {
+            "mode": "manual-collection",
+            "url": "https://www.cancerimagingarchive.net/collection/cfb-gbm/"
+          }
+        },
+        {
+          "id": "tcia-ahep0731",
+          "fileName": "tcia-ahep0731",
+          "modality": "CT/US/MR/PT/XA",
+          "objectType": "Multi-modality Collection",
+          "frameType": "series",
+          "transferSyntaxFamily": "collection",
+          "compression": "mixed",
+          "intendedUse": [
+            "cross-modality-template-source",
+            "viewer-regression"
+          ],
+          "acquisition": {
+            "mode": "manual-collection",
+            "url": "https://www.cancerimagingarchive.net/collection/ahep0731/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ohif-demo-data",
+      "name": "OHIF demo data",
+      "homepage": "https://ohif.org/demo/",
+      "license": "Demo usage",
+      "automationTier": "manual",
+      "notes": "Useful for viewer-oriented DICOMweb validation when we reach the Cornerstone3 integration phase.",
+      "samples": [
+        {
+          "id": "ohif-demo-dicomweb",
+          "fileName": "ohif-demo-dicomweb",
+          "modality": "mixed",
+          "objectType": "DICOMweb demo studies",
+          "frameType": "series",
+          "transferSyntaxFamily": "dicomweb",
+          "compression": "mixed",
+          "intendedUse": [
+            "viewer-regression",
+            "dicomweb-integration"
+          ],
+          "acquisition": {
+            "mode": "manual-dicomweb",
+            "url": "https://ohif.org/demo/"
+          }
+        }
+      ]
+    }
+  ]
+}
