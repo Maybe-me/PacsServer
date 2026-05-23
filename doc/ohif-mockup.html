@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OHIF v3 Exact Clone Mockup</title>
+    <!-- 引入 Tailwind CSS 进行像素级精确控制 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#5baff3', // 高亮蓝
+                            main: '#090c29',  // OHIF主背景
+                            dark: '#05192d',  // OHIF面板背景
+                            active: '#00a4d9',// OHIF激活色
+                        },
+                        secondary: {
+                            light: '#b3b1c6', // 次要文字
+                            main: '#263340',  // 边框和悬浮背景
+                            dark: '#16202b',
+                        },
+                        custom: {
+                            white: '#ffffff',
+                            black: '#000000',
+                            border: '#3c5d80'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    fontSize: {
+                        'xxs': '10px',
+                        'xs': '12px',
+                        'sm': '13px',
+                        'base': '14px',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        
+        body {
+            background-color: theme('colors.custom.black');
+            color: theme('colors.custom.white');
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        /* 隐藏滚动条但保留滚动功能 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: theme('colors.secondary.main');
+            border-radius: 4px;
+        }
+
+        .svg-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .viewport-active-border {
+            box-shadow: inset 0 0 0 2px theme('colors.primary.light');
+        }
+
+        .text-shadow {
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<body class="text-sm font-sans antialiased">
+
+    <!-- Header & Toolbar Section -->
+    <div class="bg-primary-main flex flex-col border-b border-secondary-main">
+        
+        <!-- Header -->
+        <header class="h-[48px] px-4 flex justify-between items-center bg-primary-main">
+            <!-- Left: Logo & Patient Info -->
+            <div class="flex items-center space-x-6">
+                <!-- OHIF Logo Mock -->
+                <div class="flex items-center space-x-2 text-primary-light font-bold text-lg tracking-wide">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2zm0 3.8L18.4 19H5.6L12 5.8z"/></svg>
+                    <span>OHIF</span>
+                </div>
+                
+                <!-- Patient Info -->
+                <div class="flex flex-col justify-center leading-tight">
+                    <span class="text-custom-white font-medium text-sm">DOE^JOHN</span>
+                    <span class="text-secondary-light text-xs">MRN-123456789</span>
+                </div>
+            </div>
+
+            <!-- Right: Settings/Options -->
+            <div class="flex items-center">
+                <button class="text-secondary-light hover:text-custom-white p-2 rounded hover:bg-secondary-main transition-colors">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Toolbar -->
+        <div class="h-[52px] bg-primary-dark flex justify-center items-center px-4 space-x-1 border-t border-secondary-main">
+            
+            <button class="flex flex-col items-center justify-center w-14 h-11 rounded hover:bg-secondary-main text-secondary-light hover:text-custom-white transition-colors group">
+                <svg class="w-5 h-5 mb-1" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                <span class="text-[10px] font-medium">Zoom</span>
+            </button>
+
+            <!-- Active Tool Example (Window Level) -->
+            <button class="flex flex-col items-center justify-center w-14 h-11 rounded bg-secondary-main text-primary-light transition-colors relative">
+                <svg class="w-5 h-5 mb-1" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6V6z"/></svg>
+                <span class="text-[10px] font-medium">W/L</span>
+                <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-[2px] bg-primary-light rounded-t-sm"></div>
+            </button>
+
+            <button class="flex flex-col items-center justify-center w-14 h-11 rounded hover:bg-secondary-main text-secondary-light hover:text-custom-white transition-colors">
+                <svg class="w-5 h-5 mb-1" viewBox="0 0 24 24" fill="currentColor"><path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/></svg>
+                <span class="text-[10px] font-medium">Pan</span>
+            </button>
+
+            <div class="w-[1px] h-8 bg-secondary-main mx-2"></div>
+
+            <button class="flex flex-col items-center justify-center w-14 h-11 rounded hover:bg-secondary-main text-secondary-light hover:text-custom-white transition-colors">
+                <svg class="w-5 h-5 mb-1" viewBox="0 0 24 24" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h2v4h2V8h2v4h2V8h2v4h2V8h2v4h2V8h2v10z"/></svg>
+                <span class="text-[10px] font-medium">Length</span>
+            </button>
+
+            <button class="flex flex-col items-center justify-center w-14 h-11 rounded hover:bg-secondary-main text-secondary-light hover:text-custom-white transition-colors">
+                <svg class="w-5 h-5 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20L20 4M4 20h10M4 20v-10"/></svg>
+                <span class="text-[10px] font-medium">Angle</span>
+            </button>
+
+            <div class="w-[1px] h-8 bg-secondary-main mx-2"></div>
+
+            <!-- Layout Selector -->
+            <button class="flex flex-col items-center justify-center w-14 h-11 rounded hover:bg-secondary-main text-secondary-light hover:text-custom-white transition-colors">
+                <svg class="w-5 h-5 mb-1" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>
+                <span class="text-[10px] font-medium">Layout</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App Layout -->
+    <div class="flex flex-1 overflow-hidden bg-custom-black">
+        
+        <!-- Left Panel: Study Browser -->
+        <aside class="w-[300px] flex flex-col bg-primary-dark border-r border-secondary-main">
+            <!-- Tabs -->
+            <div class="flex border-b border-secondary-main">
+                <div class="flex-1 py-2 text-center text-xs font-semibold text-custom-white border-b-2 border-primary-light bg-primary-main cursor-pointer">Studies</div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-2 space-y-2">
+                <!-- Thumbnail Card 1 (Active) -->
+                <div class="flex flex-col p-2 bg-primary-main rounded border border-primary-light shadow-[0_0_0_1px_#5baff3] cursor-pointer">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="text-xs text-custom-white leading-tight">
+                            <span class="font-bold">1</span>
+                            <span class="ml-1 opacity-90">Axial T1 SE</span>
+                        </div>
+                        <span class="bg-secondary-main text-secondary-light text-[10px] px-1.5 py-0.5 rounded">MR</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <!-- Image Area -->
+                        <div class="w-24 h-24 bg-custom-black border border-secondary-main rounded-sm flex items-center justify-center overflow-hidden">
+                            <div class="w-full h-full rounded-full bg-gradient-to-tr from-gray-700 via-gray-900 to-black opacity-80 scale-75"></div>
+                        </div>
+                        <!-- Meta Info -->
+                        <div class="flex flex-col justify-end text-[10px] text-secondary-light space-y-1">
+                            <div><span class="text-custom-white">120</span> Images</div>
+                            <div>SP: -24.5</div>
+                            <div>TH: 5.0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thumbnail Card 2 -->
+                <div class="flex flex-col p-2 bg-primary-main rounded border border-transparent hover:border-secondary-light transition-colors cursor-pointer">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="text-xs text-secondary-light leading-tight">
+                            <span class="font-bold">2</span>
+                            <span class="ml-1">Sagittal T2 FSE</span>
+                        </div>
+                        <span class="bg-secondary-main text-secondary-light text-[10px] px-1.5 py-0.5 rounded">MR</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="w-24 h-24 bg-custom-black border border-secondary-main rounded-sm flex items-center justify-center overflow-hidden">
+                            <div class="w-full h-full bg-gradient-to-b from-gray-600 via-gray-800 to-black opacity-70 scale-[0.8] rounded-t-full"></div>
+                        </div>
+                        <div class="flex flex-col justify-end text-[10px] text-secondary-light space-y-1">
+                            <div><span class="text-custom-white">64</span> Images</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Viewport Grid -->
+        <main class="flex-1 bg-custom-black grid grid-cols-2 grid-rows-2 gap-[2px] p-[2px]">
+            
+            <!-- Viewport 1 (Active) -->
+            <div class="relative bg-custom-black viewport-active-border flex justify-center items-center overflow-hidden group">
+                <!-- Mock Image -->
+                <div class="w-2/3 h-2/3 rounded-full bg-gradient-to-tr from-gray-700 via-gray-800 to-black opacity-90 scale-90"></div>
+                
+                <!-- Cornerstone Overlays (OHIF Style) -->
+                <div class="absolute inset-2 pointer-events-none text-primary-light text-xs font-mono leading-tight text-shadow">
+                    <!-- Top Left -->
+                    <div class="absolute top-0 left-0">
+                        <div>DOE^JOHN</div>
+                        <div>MRN-123456789</div>
+                        <div>01-Jan-1970</div>
+                    </div>
+                    <!-- Top Right -->
+                    <div class="absolute top-0 right-0 text-right">
+                        <div>Study: Brain MRI</div>
+                        <div>Series: Axial T1 SE</div>
+                    </div>
+                    <!-- Bottom Left -->
+                    <div class="absolute bottom-0 left-0">
+                        <div>W: 450 L: 40</div>
+                        <div>Zoom: 135%</div>
+                    </div>
+                    <!-- Bottom Right -->
+                    <div class="absolute bottom-0 right-0 text-right flex flex-col items-end">
+                        <div class="bg-primary-dark/80 px-1 rounded mb-1">Img: 45/120</div>
+                        <div>Thickness: 5.0 mm</div>
+                    </div>
+                </div>
+
+                <!-- Measurement Overlay Line (Mock) -->
+                <svg class="absolute inset-0 w-full h-full pointer-events-none">
+                    <line x1="30%" y1="40%" x2="60%" y2="50%" stroke="#5baff3" stroke-width="1.5" stroke-dasharray="4" />
+                    <circle cx="30%" cy="40%" r="3" fill="#5baff3" />
+                    <circle cx="60%" cy="50%" r="3" fill="#5baff3" />
+                    <text x="45%" y="43%" fill="#5baff3" font-size="12" class="text-shadow font-mono">14.2 mm</text>
+                </svg>
+            </div>
+
+            <!-- Viewport 2 -->
+            <div class="relative bg-custom-black border border-transparent hover:border-secondary-main flex justify-center items-center overflow-hidden">
+                <div class="w-3/4 h-3/4 bg-gradient-to-b from-gray-600 via-gray-800 to-black opacity-80 scale-[0.8] rounded-t-[40%]"></div>
+                <div class="absolute inset-2 pointer-events-none text-secondary-light text-xs font-mono leading-tight text-shadow">
+                    <div class="absolute top-0 left-0">DOE^JOHN</div>
+                    <div class="absolute top-0 right-0 text-right">Sagittal T2 FSE</div>
+                    <div class="absolute bottom-0 left-0">W: 300 L: 50</div>
+                    <div class="absolute bottom-0 right-0 text-right">Img: 20/64</div>
+                </div>
+            </div>
+
+            <!-- Viewport 3 (Empty) -->
+            <div class="relative bg-custom-black flex justify-center items-center border border-transparent">
+                <span class="text-secondary-main text-xs">Select a series to load</span>
+            </div>
+
+            <!-- Viewport 4 (Empty) -->
+            <div class="relative bg-custom-black flex justify-center items-center border border-transparent">
+                <span class="text-secondary-main text-xs">Select a series to load</span>
+            </div>
+
+        </main>
+
+        <!-- Right Panel: Measurements -->
+        <aside class="w-[300px] flex flex-col bg-primary-dark border-l border-secondary-main">
+            <!-- Tabs -->
+            <div class="flex border-b border-secondary-main">
+                <div class="flex-1 py-2 text-center text-xs font-semibold text-custom-white border-b-2 border-primary-light bg-primary-main cursor-pointer">Measurements</div>
+                <div class="flex-1 py-2 text-center text-xs text-secondary-light hover:text-custom-white bg-primary-dark cursor-pointer">Info</div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4">
+                <div class="mb-4">
+                    <div class="text-xs font-semibold text-custom-white mb-2 pb-1 border-b border-secondary-main flex justify-between">
+                        <span>Length</span>
+                        <span class="text-secondary-light font-normal text-[10px]">1</span>
+                    </div>
+                    
+                    <div class="bg-primary-main border border-secondary-main rounded p-2 text-xs flex justify-between items-center group cursor-pointer hover:border-primary-light transition-colors">
+                        <div class="flex flex-col">
+                            <span class="text-custom-white mb-1">Axial T1 SE</span>
+                            <span class="text-secondary-light font-mono">14.2 mm</span>
+                        </div>
+                        <button class="text-secondary-light opacity-0 group-hover:opacity-100 hover:text-red-400">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+</body>
+</html>
