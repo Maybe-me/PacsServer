@@ -10,6 +10,8 @@ public interface PacsPatientRepository {
 
     Optional<PacsPatient> findByPatientKey(String patientId, String issuerOfPatientId);
 
+    Optional<PacsPatient> findById(Long id);
+
     PacsPatient save(PacsPatient patient);
 
     List<PacsPatient> search(PatientQueryCriteria criteria);

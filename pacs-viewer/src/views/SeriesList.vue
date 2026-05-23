@@ -1,96 +1,58 @@
 <template>
-  <a-card title="Series" size="small" class="fill-height">
-    <a-table
-      :columns="columns"
-      :data-source="series"
-      :pagination="false"
-      size="small"
-      row-key="seriesInstanceUid"
-      :customRow="customRow"
-    />
-  </a-card>
+  <div class="list-container">
+    <div v-if="series.length === 0" class="viewer-empty" style="padding: 20px;">
+      No series selected
+    </div>
+    <div
+      v-for="item in series"
+      :key="item.seriesInstanceUid"
+      class="list-item"
+      :class="{ active: item.seriesInstanceUid === selectedSeriesUid }"
+      @click="$emit('select', item)"
+    >
+      <div class="list-item-main">
+        <div class="item-title">{{ item.seriesDescription || 'No Description' }}</div>
+        <div class="item-sub">{{ item.modality }} · {{ item.numInstances }} instances</div>
+      </div>
+      <div class="status-indicator" :class="getStatusClass(item)"></div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { h } from 'vue'
-import { Tag } from 'ant-design-vue'
-
 defineProps({
   series: {
     type: Array,
     default: () => [],
   },
+  selectedSeriesUid: {
+    type: String,
+    default: '',
+  },
 })
 
 const emit = defineEmits(['select'])
 
-function renderViewerStatus(record) {
-  const tags = []
+function getStatusClass(record) {
   const incompatibleCount = Number(record?.incompatibleCount) || 0
   const degradedCount = Number(record?.degradedCount) || 0
-  const failedFrameCount = Number(record?.failedFrameCount) || 0
-  const displayableCount = Number(record?.displayableCount) || 0
   const totalInstances = Number(record?.numInstances) || 0
 
-  let statusLabel = 'Unknown'
-  let statusColor = 'default'
-  if (totalInstances > 0 && incompatibleCount >= totalInstances) {
-    statusLabel = 'Blocked'
-    statusColor = 'error'
-  } else if (incompatibleCount > 0) {
-    statusLabel = 'Partial'
-    statusColor = 'warning'
-  } else if (degradedCount > 0) {
-    statusLabel = 'Degraded'
-    statusColor = 'processing'
-  } else if (totalInstances > 0) {
-    statusLabel = 'Healthy'
-    statusColor = 'success'
-  }
-
-  tags.push(h(Tag, { color: statusColor }, () => statusLabel))
-  if (displayableCount || totalInstances) {
-    tags.push(h(Tag, null, () => `OK ${displayableCount}/${totalInstances}`))
-  }
-  if (degradedCount > 0) {
-    tags.push(h(Tag, { color: 'processing' }, () => `Degraded ${degradedCount}`))
-  }
-  if (failedFrameCount > 0) {
-    tags.push(h(Tag, { color: 'gold' }, () => `Skipped ${failedFrameCount}`))
-  }
-  if (incompatibleCount > 0) {
-    tags.push(h(Tag, { color: 'error' }, () => `Blocked ${incompatibleCount}`))
-  }
-
-  return h('div', { class: 'series-viewer-status' }, tags)
-}
-
-const columns = [
-  { title: 'Series UID', dataIndex: 'seriesInstanceUid', key: 'seriesInstanceUid', ellipsis: true },
-  { title: 'Description', dataIndex: 'seriesDescription', key: 'seriesDescription' },
-  { title: 'Modality', dataIndex: 'modality', key: 'modality', width: 90 },
-  { title: 'Instances', dataIndex: 'numInstances', key: 'numInstances', width: 90 },
-  {
-    title: 'Viewer',
-    dataIndex: 'compatibilitySummary',
-    key: 'compatibilitySummary',
-    width: 280,
-    customRender: ({ record }) => renderViewerStatus(record),
-  },
-]
-
-function customRow(record) {
-  return {
-    onClick: () => emit('select', record),
-    style: 'cursor:pointer',
-  }
+  if (totalInstances > 0 && incompatibleCount >= totalInstances) return 'status-error'
+  if (incompatibleCount > 0) return 'status-warning'
+  if (degradedCount > 0) return 'status-processing'
+  return 'status-success'
 }
 </script>
 
 <style scoped>
-.series-viewer-status {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
 }
+.status-error { background-color: #f87171; }
+.status-warning { background-color: #fbbf24; }
+.status-processing { background-color: #60a5fa; }
+.status-success { background-color: #34d399; }
 </style>

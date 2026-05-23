@@ -76,6 +76,24 @@ class DicomwebIntegrationTest {
                 });
     }
 
+    @Test
+    void shouldReturnSeriesMetadataThroughWadoRs() throws Exception {
+        String patientId = "META-" + System.nanoTime();
+        String studyUid = "1.2.826.0.6." + System.nanoTime();
+        String seriesUid = studyUid + ".1";
+        String sopUid = seriesUid + ".1";
+        String payload = "metadata-payload";
+
+        seedStudy(patientId, studyUid, seriesUid, sopUid, "CT", "Meta Study", payload);
+
+        mockMvc.perform(get("/wado-rs/studies/{study}/series/{series}/metadata", studyUid, seriesUid))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/dicom+json"))
+                .andDo(result -> {
+                    System.out.println("METADATA RESPONSE: " + result.getResponse().getContentAsString());
+                });
+    }
+
     private void seedStudy(
             String patientId,
             String studyUid,

@@ -3,16 +3,21 @@ package com.mylife.pacs.infrastructure.storage;
 import com.mylife.pacs.common.config.DicomPacsProperties;
 import com.mylife.pacs.domain.model.PacsInstance;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ObjectStorageServiceTest {
+
+    @TempDir
+    Path tempDir;
 
     @Test
     void shouldReadUsingInstanceStorageTypeAndKey() {
@@ -91,6 +96,91 @@ class ObjectStorageServiceTest {
 
         assertEquals("s3", stored.storageType());
         assertEquals("stored-by-s3.dcm", stored.storageKey());
+    }
+
+    @Test
+    void shouldStoreAndReadUsingS3Provider() {
+        DicomPacsProperties properties = new DicomPacsProperties();
+        properties.getS3().setBucket("test-s3-bucket");
+        properties.getS3().setEndpoint("http://localhost:9000"); // Will trigger mock fallback if offline
+
+        S3CompatibleStorageProvider s3Provider = new S3CompatibleStorageProvider(properties);
+        byte[] payload = new byte[]{10, 20, 30};
+
+        StoredFile stored = s3Provider.store(Map.of("patientId", "PAT-S3", "studyInstanceUid", "STUDY-S3", "seriesInstanceUid", "SERIES-S3", "sopInstanceUid", "SOP-S3"), payload);
+
+        assertEquals("s3", stored.storageType());
+        assertEquals("test-s3-bucket", stored.storageBucket());
+        assertTrue(s3Provider.exists(stored.storageKey()));
+
+        byte[] retrieved = s3Provider.read(stored.storageKey());
+        assertArrayEquals(payload, retrieved);
+
+        s3Provider.delete(stored.storageKey());
+        assertFalse(s3Provider.exists(stored.storageKey()));
+    }
+
+    @Test
+    void shouldStoreAndReadUsingFastDfsProvider() {
+        DicomPacsProperties properties = new DicomPacsProperties();
+        properties.getFastdfs().setGroupName("test-group");
+        properties.getFastdfs().setTrackerServer("192.168.1.100:22122");
+
+        FastDfsStorageProvider fastDfsProvider = new FastDfsStorageProvider(properties);
+        byte[] payload = new byte[]{40, 50, 60, 70};
+
+        StoredFile stored = fastDfsProvider.store(Map.of(), payload);
+
+        assertEquals("fastdfs", stored.storageType());
+        assertEquals("test-group", stored.storageBucket());
+        assertTrue(stored.storageKey().startsWith("test-group/M00/00/00/"));
+        assertTrue(fastDfsProvider.exists(stored.storageKey()));
+
+        byte[] retrieved = fastDfsProvider.read(stored.storageKey());
+        assertArrayEquals(payload, retrieved);
+
+        fastDfsProvider.delete(stored.storageKey());
+        assertFalse(fastDfsProvider.exists(stored.storageKey()));
+    }
+
+    @Test
+    void shouldSupportDynamicProviderHotSwapping() throws IOException {
+        DicomPacsProperties properties = new DicomPacsProperties();
+        properties.setStorageDir(tempDir.toString());
+        properties.setFilePathPattern("{patientId}/{studyInstanceUid}/{seriesInstanceUid}/{sopInstanceUid}.dcm");
+
+        LocalFileStorage localStorage = new LocalFileStorage(properties);
+        S3CompatibleStorageProvider s3Provider = new S3CompatibleStorageProvider(properties);
+        FastDfsStorageProvider fastDfsProvider = new FastDfsStorageProvider(properties);
+
+        ObjectStorageService service = new ObjectStorageService(
+                List.of(localStorage, s3Provider, fastDfsProvider),
+                properties
+        );
+
+        byte[] payload = new byte[]{8, 8, 8};
+        Map<String, String> attrs = Map.of(
+                "patientId", "PAT-SWAP",
+                "studyInstanceUid", "STUDY-SWAP",
+                "seriesInstanceUid", "SERIES-SWAP",
+                "sopInstanceUid", "SOP-SWAP"
+        );
+
+        // 1. Swap to Local
+        properties.setStorageProvider("local");
+        StoredFile storedLocal = service.store(attrs, payload);
+        assertEquals("local", storedLocal.storageType());
+        assertTrue(Files.exists(tempDir.resolve(storedLocal.relativePath())));
+
+        // 2. Swap to S3
+        properties.setStorageProvider("s3");
+        StoredFile storedS3 = service.store(attrs, payload);
+        assertEquals("s3", storedS3.storageType());
+
+        // 3. Swap to FastDFS
+        properties.setStorageProvider("fastdfs");
+        StoredFile storedFast = service.store(attrs, payload);
+        assertEquals("fastdfs", storedFast.storageType());
     }
 
     private static final class FakeProvider implements ObjectStorageProvider {

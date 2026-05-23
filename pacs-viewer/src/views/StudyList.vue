@@ -1,15 +1,24 @@
 <template>
-  <a-card title="Studies" size="small" class="fill-height">
-    <a-table
-      :columns="columns"
-      :data-source="studies"
-      :pagination="false"
-      size="small"
-      row-key="studyInstanceUid"
-      @row-click="onRowClick"
-      :customRow="customRow"
-    />
-  </a-card>
+  <div class="list-container">
+    <div v-if="studies.length === 0" class="viewer-empty" style="padding: 20px;">
+      No studies found
+    </div>
+    <div
+      v-for="study in studies"
+      :key="study.studyInstanceUid"
+      class="list-item"
+      :class="{ active: study.studyInstanceUid === selectedStudyUid }"
+      @click="$emit('select', study)"
+    >
+      <div class="list-item-main">
+        <div class="item-title">{{ study.studyDescription || 'No Description' }}</div>
+        <div class="item-sub">{{ study.studyDate }} · {{ study.modalitiesInStudy }}</div>
+      </div>
+      <div class="item-meta">
+        <div>{{ study.numSeries }} series</div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -18,24 +27,14 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  selectedStudyUid: {
+    type: String,
+    default: '',
+  },
 })
 
 const emit = defineEmits(['select'])
-
-const columns = [
-  { title: 'Study UID', dataIndex: 'studyInstanceUid', key: 'studyInstanceUid', ellipsis: true },
-  { title: 'Description', dataIndex: 'studyDescription', key: 'studyDescription' },
-  { title: 'Modality', dataIndex: 'modalitiesInStudy', key: 'modalitiesInStudy' },
-  { title: 'Series', dataIndex: 'numSeries', key: 'numSeries', width: 80 },
-]
-
-function customRow(record) {
-  return {
-    onClick: () => emit('select', record),
-    style: 'cursor:pointer',
-  }
-}
-
-function onRowClick() {
-}
 </script>
+
+<style scoped>
+</style>

@@ -31,6 +31,15 @@ public class JpaPacsPatientRepository implements PacsPatientRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Optional<PacsPatient> findById(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return repository.findById(id).map(PersistenceMapper::toDomain);
+    }
+
+    @Override
     public PacsPatient save(PacsPatient patient) {
         PatientEntity entity = patient.id() == null
                 ? new PatientEntity()

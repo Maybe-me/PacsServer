@@ -102,6 +102,11 @@ class DefaultDicomStoreDomainServiceTest {
         }
 
         @Override
+        public Optional<PacsPatient> findById(Long id) {
+            return Optional.ofNullable(store.get(id));
+        }
+
+        @Override
         public PacsPatient save(PacsPatient patient) {
             Long id = patient.id() == null ? ids.incrementAndGet() : patient.id();
             PacsPatient saved = new PacsPatient(id, patient.patientId(), patient.issuerOfPatientId(), patient.patientName(),

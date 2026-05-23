@@ -7,6 +7,7 @@ import com.mylife.pacs.domain.model.PacsStudy;
 import com.mylife.pacs.domain.service.InstanceQueryCriteria;
 import com.mylife.pacs.domain.service.SeriesQueryCriteria;
 import com.mylife.pacs.domain.service.StudyQueryCriteria;
+import com.mylife.pacs.domain.repository.PacsPatientRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +22,14 @@ import java.util.Map;
 public class ViewerRestController {
 
     private final ViewerApplicationService viewerApplicationService;
+    private final PacsPatientRepository patientRepository;
 
-    public ViewerRestController(ViewerApplicationService viewerApplicationService) {
+    public ViewerRestController(
+            ViewerApplicationService viewerApplicationService,
+            PacsPatientRepository patientRepository
+    ) {
         this.viewerApplicationService = viewerApplicationService;
+        this.patientRepository = patientRepository;
     }
 
     @GetMapping("/studies")
@@ -65,6 +71,16 @@ public class ViewerRestController {
     }
 
     private Map<String, Object> toStudy(PacsStudy study) {
+        String patientName = "Unknown Patient";
+        String patientId = "No MRN";
+        if (study.patientFk() != null) {
+            var patientOpt = patientRepository.findById(study.patientFk());
+            if (patientOpt.isPresent()) {
+                var patient = patientOpt.get();
+                patientName = patient.patientName() == null ? "" : patient.patientName();
+                patientId = patient.patientId() == null ? "" : patient.patientId();
+            }
+        }
         return Map.of(
                 "studyInstanceUid", study.studyInstanceUid(),
                 "accessionNo", study.accessionNo() == null ? "" : study.accessionNo(),
@@ -72,7 +88,9 @@ public class ViewerRestController {
                 "studyDescription", study.studyDescription() == null ? "" : study.studyDescription(),
                 "modalitiesInStudy", study.modalitiesInStudy() == null ? "" : study.modalitiesInStudy(),
                 "numSeries", study.numSeries(),
-                "numInstances", study.numInstances()
+                "numInstances", study.numInstances(),
+                "patientName", patientName,
+                "patientId", patientId
         );
     }
 

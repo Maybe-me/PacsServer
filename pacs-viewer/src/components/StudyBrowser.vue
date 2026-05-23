@@ -1,39 +1,57 @@
 <template>
-  <a-card size="small" title="Thumbnails" class="viewer-panel-card viewer-thumbnail-card" :bordered="false">
-    <div v-if="instances.length" class="thumbnail-strip">
-      <button
-        v-for="item in instances"
+  <div class="thumbnail-list">
+    <div v-if="instances.length === 0" class="viewer-empty">
+      <div>
+        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="2" width="20" height="20" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <path d="M21 15l-5-5L5 21"/>
+        </svg>
+        <div>No images available</div>
+        <div class="empty-sub">Select a series from the study list</div>
+      </div>
+    </div>
+
+    <div class="thumbnail-grid">
+      <div
+        v-for="(item, index) in instances"
         :key="item.sopInstanceUid"
-        class="thumbnail-item"
+        class="thumbnail-card"
         :class="{
-          'thumbnail-item--active': item.sopInstanceUid === selectedInstanceUid,
-          'thumbnail-item--unsupported': item.displayable === false,
+          active: item.sopInstanceUid === selectedInstanceUid,
+          error: item.displayable === false
         }"
         @click="$emit('select', item)"
-        >
-          <span class="thumbnail-item__index">#{{ item.instanceNumber || 0 }}</span>
-          <span v-if="item.numberOfFrames > 1" class="thumbnail-item__meta">{{ item.numberOfFrames }} frames</span>
-          <span v-if="item.failedFrames?.length" class="thumbnail-item__meta">{{ item.failedFrames.length }} failed</span>
-          <span v-if="resolveIssue(item)" class="thumbnail-item__issue">{{ resolveIssue(item) }}</span>
-          <span class="thumbnail-item__uid mono">{{ item.sopInstanceUid }}</span>
-        </button>
+        :title="`${item.seriesDescription || 'Instance'} - #${item.instanceNumber || index + 1}`"
+      >
+        <div class="thumbnail-header">
+          <span class="thumbnail-series-number">#{{ item.instanceNumber || index + 1 }}</span>
+          <span class="thumbnail-series-desc">{{ item.seriesDescription || 'No Description' }}</span>
+          <span class="thumbnail-modality">{{ item.modality || 'OT' }}</span>
+        </div>
+
+        <div class="thumbnail-preview">
+          <div class="preview-placeholder">
+            <svg class="preview-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+              <rect x="2" y="2" width="20" height="20" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="M21 15l-5-5L5 21"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="thumbnail-meta">
+          <span class="meta-instances">{{ item.numberOfFrames || 1 }} frame{{ (item.numberOfFrames || 1) > 1 ? 's' : '' }}</span>
+          <span v-if="item.failedFrames?.length" class="meta-warning">
+            {{ item.failedFrames.length }} failed
+          </span>
+        </div>
       </div>
-      <a-empty v-else description="No thumbnails" />
-    </a-card>
+    </div>
+  </div>
 </template>
 
 <script setup>
-function resolveIssue(instance) {
-  if (instance?.displayIssue) {
-    return instance.displayIssue
-  }
-  const latestFrameIssue = instance?.frameIssues?.[instance.frameIssues.length - 1]
-  if (!latestFrameIssue?.message || !instance?.failedFrames?.length) {
-    return ''
-  }
-  return `Skipped ${instance.failedFrames.length} failed frame(s): ${latestFrameIssue.message}`
-}
-
 defineProps({
   instances: {
     type: Array,

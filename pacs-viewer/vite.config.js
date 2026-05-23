@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       globalthis: fileURLToPath(new URL('./src/shims/globalthis.js', import.meta.url)),
+      'dicom-parser': fileURLToPath(new URL('./src/shims/dicom-parser.js', import.meta.url)),
     },
   },
   optimizeDeps: {

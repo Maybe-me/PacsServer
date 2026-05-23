@@ -38,6 +38,8 @@ public class DicomPacsProperties {
     private final Security security = new Security();
     private final Dicomweb dicomweb = new Dicomweb();
     private final Sync sync = new Sync();
+    private final S3 s3 = new S3();
+    private final FastDfs fastdfs = new FastDfs();
 
     public String getLocalAet() {
         return localAet;
@@ -117,6 +119,14 @@ public class DicomPacsProperties {
 
     public Sync getSync() {
         return sync;
+    }
+
+    public S3 getS3() {
+        return s3;
+    }
+
+    public FastDfs getFastdfs() {
+        return fastdfs;
     }
 
     public static class Netty {
@@ -572,6 +582,102 @@ public class DicomPacsProperties {
             public void setSourceAetBlockList(List<String> sourceAetBlockList) {
                 this.sourceAetBlockList = sourceAetBlockList == null ? new ArrayList<>() : sourceAetBlockList;
             }
+        }
+    }
+
+    public static class S3 {
+        private String endpoint = "http://localhost:9000";
+        private String bucket = "pacs-storage";
+        private String accessKey = "minioadmin";
+        private String secretKey = "minioadmin";
+        private String region = "us-east-1";
+        private boolean pathStyleAccess = true;
+
+        public String getEndpoint() {
+            return endpoint;
+        }
+
+        public void setEndpoint(String endpoint) {
+            this.endpoint = endpoint;
+        }
+
+        public String getBucket() {
+            return bucket;
+        }
+
+        public void setBucket(String bucket) {
+            this.bucket = bucket;
+        }
+
+        public String getAccessKey() {
+            return accessKey;
+        }
+
+        public void setAccessKey(String accessKey) {
+            this.accessKey = accessKey;
+        }
+
+        public String getSecretKey() {
+            return secretKey;
+        }
+
+        public void setSecretKey(String secretKey) {
+            this.secretKey = secretKey;
+        }
+
+        public String getRegion() {
+            return region;
+        }
+
+        public void setRegion(String region) {
+            this.region = region;
+        }
+
+        public boolean isPathStyleAccess() {
+            return pathStyleAccess;
+        }
+
+        public void setPathStyleAccess(boolean pathStyleAccess) {
+            this.pathStyleAccess = pathStyleAccess;
+        }
+    }
+
+    public static class FastDfs {
+        private String trackerServer = "localhost:22122";
+        private String groupName = "group1";
+        private int connectTimeoutMs = 5000;
+        private int networkTimeoutMs = 30000;
+
+        public String getTrackerServer() {
+            return trackerServer;
+        }
+
+        public void setTrackerServer(String trackerServer) {
+            this.trackerServer = trackerServer;
+        }
+
+        public String getGroupName() {
+            return groupName;
+        }
+
+        public void setGroupName(String groupName) {
+            this.groupName = groupName;
+        }
+
+        public int getConnectTimeoutMs() {
+            return connectTimeoutMs;
+        }
+
+        public void setConnectTimeoutMs(int connectTimeoutMs) {
+            this.connectTimeoutMs = connectTimeoutMs;
+        }
+
+        public int getNetworkTimeoutMs() {
+            return networkTimeoutMs;
+        }
+
+        public void setNetworkTimeoutMs(int networkTimeoutMs) {
+            this.networkTimeoutMs = networkTimeoutMs;
         }
     }
 }
