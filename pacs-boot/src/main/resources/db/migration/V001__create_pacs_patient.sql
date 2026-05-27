@@ -5,7 +5,7 @@ CREATE TABLE pacs_patient (
     patient_name VARCHAR(256),
     patient_sex VARCHAR(4),
     patient_birth_date VARCHAR(32),
-    extra_tags CLOB,
+    extra_tags TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uk_patient_id UNIQUE (patient_id, issuer_of_patient_id)

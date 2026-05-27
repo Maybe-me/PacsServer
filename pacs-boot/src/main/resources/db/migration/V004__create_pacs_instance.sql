@@ -8,7 +8,7 @@ CREATE TABLE pacs_instance (
     file_path VARCHAR(512) NOT NULL,
     file_size BIGINT,
     file_md5 VARCHAR(32),
-    extra_tags CLOB,
+    extra_tags TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uk_sop_instance_uid UNIQUE (sop_instance_uid),

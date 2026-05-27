@@ -10,7 +10,7 @@ CREATE TABLE sync_execution (
     skipped_existing_count INT NOT NULL DEFAULT 0,
     duplicate_skip_count INT NOT NULL DEFAULT 0,
     source_loop_skip_count INT NOT NULL DEFAULT 0,
-    criteria_json CLOB,
+    criteria_json TEXT,
     error_message VARCHAR(1024),
     started_at TIMESTAMP NOT NULL,
     finished_at TIMESTAMP NOT NULL,

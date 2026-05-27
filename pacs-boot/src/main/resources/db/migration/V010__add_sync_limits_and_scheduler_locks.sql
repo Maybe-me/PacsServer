@@ -1,8 +1,8 @@
 ALTER TABLE sync_job_config ADD COLUMN max_studies_per_run INT NOT NULL DEFAULT 0;
 ALTER TABLE sync_job_config ADD COLUMN max_instances_per_run INT NOT NULL DEFAULT 0;
 ALTER TABLE sync_job_config ADD COLUMN throttle_delay_ms BIGINT NOT NULL DEFAULT 0;
-ALTER TABLE sync_job_config ADD COLUMN source_aet_allow_list CLOB;
-ALTER TABLE sync_job_config ADD COLUMN source_aet_block_list CLOB;
+ALTER TABLE sync_job_config ADD COLUMN source_aet_allow_list TEXT;
+ALTER TABLE sync_job_config ADD COLUMN source_aet_block_list TEXT;
 
 CREATE TABLE sync_scheduler_lock (
     lock_name VARCHAR(64) PRIMARY KEY,

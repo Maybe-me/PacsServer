@@ -10,7 +10,7 @@ CREATE TABLE pacs_study (
     referring_dr VARCHAR(128),
     num_series INT NOT NULL DEFAULT 0,
     num_instances INT NOT NULL DEFAULT 0,
-    extra_tags CLOB,
+    extra_tags TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uk_study_uid UNIQUE (study_instance_uid),

@@ -7,7 +7,7 @@ CREATE TABLE pacs_series (
     body_part_examined VARCHAR(64),
     series_number INT,
     num_instances INT NOT NULL DEFAULT 0,
-    extra_tags CLOB,
+    extra_tags TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uk_series_uid UNIQUE (series_instance_uid),
