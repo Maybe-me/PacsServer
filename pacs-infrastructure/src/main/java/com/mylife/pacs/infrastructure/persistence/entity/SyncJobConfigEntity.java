@@ -60,12 +60,10 @@ public class SyncJobConfigEntity extends AuditableEntity {
     @Column(name = "throttle_delay_ms", nullable = false)
     private Long throttleDelayMs = 0L;
 
-    @Lob
-    @Column(name = "source_aet_allow_list")
+    @Column(name = "source_aet_allow_list", columnDefinition = "TEXT")
     private String sourceAetAllowList;
 
-    @Lob
-    @Column(name = "source_aet_block_list")
+    @Column(name = "source_aet_block_list", columnDefinition = "TEXT")
     private String sourceAetBlockList;
 
     @Column(name = "max_retry_count", nullable = false)

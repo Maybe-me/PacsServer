@@ -56,8 +56,7 @@ public class InstanceEntity extends AuditableEntity {
     @Column(name = "storage_key", nullable = false, length = 512)
     private String storageKey;
 
-    @Lob
-    @Column(name = "extra_tags")
+    @Column(name = "extra_tags", columnDefinition = "TEXT")
     private String extraTagsJson;
 
     public Long getId() {

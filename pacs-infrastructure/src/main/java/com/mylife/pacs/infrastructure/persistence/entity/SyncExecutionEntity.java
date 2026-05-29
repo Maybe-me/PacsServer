@@ -51,8 +51,7 @@ public class SyncExecutionEntity extends AuditableEntity {
     @Column(name = "source_loop_skip_count", nullable = false)
     private int sourceLoopSkipCount;
 
-    @Lob
-    @Column(name = "criteria_json")
+    @Column(name = "criteria_json", columnDefinition = "TEXT")
     private String criteriaJson;
 
     @Column(name = "error_category", length = 32)

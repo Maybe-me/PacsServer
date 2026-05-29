@@ -44,8 +44,7 @@ public class SeriesEntity extends AuditableEntity {
     @Column(name = "num_instances", nullable = false)
     private int numInstances;
 
-    @Lob
-    @Column(name = "extra_tags")
+    @Column(name = "extra_tags", columnDefinition = "TEXT")
     private String extraTagsJson;
 
     public Long getId() {

@@ -34,8 +34,7 @@ public class PatientEntity extends AuditableEntity {
     @Column(name = "patient_birth_date", length = 32)
     private String patientBirthDate;
 
-    @Lob
-    @Column(name = "extra_tags")
+    @Column(name = "extra_tags", columnDefinition = "TEXT")
     private String extraTagsJson;
 
     public Long getId() {
