@@ -64,13 +64,56 @@ public class WadoRsController {
     @GetMapping(value = "/studies/{studyInstanceUid}/series/{seriesInstanceUid}/metadata", produces = "application/dicom+json")
     public ResponseEntity<String> getSeriesMetadata(
             @PathVariable("studyInstanceUid") String studyInstanceUid,
-            @PathVariable("seriesInstanceUid") String seriesInstanceUid
+            @PathVariable("seriesInstanceUid") String seriesInstanceUid,
+            @org.springframework.web.bind.annotation.RequestHeader(value = "Host", required = false) String hostHeader,
+            @org.springframework.web.bind.annotation.RequestHeader(value = "X-Forwarded-Proto", required = false) String xForwardedProto,
+            @org.springframework.web.bind.annotation.RequestHeader(value = "X-Forwarded-Host", required = false) String xForwardedHost,
+            @org.springframework.web.bind.annotation.RequestHeader(value = "X-Forwarded-Port", required = false) String xForwardedPort
     ) {
         List<PacsInstance> instances = dicomApplicationService.findInstances(
                 new InstanceQueryCriteria(studyInstanceUid, seriesInstanceUid, null)
         );
 
-        String baseUrl = "http://localhost:" + serverPort + "/wado-rs";
+        String scheme = "http";
+        String serverName = "localhost";
+        int port = serverPort;
+
+        if (xForwardedProto != null && !xForwardedProto.isBlank()) {
+            scheme = xForwardedProto;
+        }
+
+        String rawHost = null;
+        if (xForwardedHost != null && !xForwardedHost.isBlank()) {
+            rawHost = xForwardedHost;
+        } else if (hostHeader != null && !hostHeader.isBlank()) {
+            rawHost = hostHeader;
+        }
+
+        if (rawHost != null) {
+            if (rawHost.contains(":")) {
+                String[] parts = rawHost.split(":");
+                serverName = parts[0];
+                try {
+                    port = Integer.parseInt(parts[1]);
+                } catch (NumberFormatException ignored) {}
+            } else {
+                serverName = rawHost;
+                if (xForwardedPort != null && !xForwardedPort.isBlank()) {
+                    try {
+                        port = Integer.parseInt(xForwardedPort);
+                    } catch (NumberFormatException ignored) {}
+                } else {
+                    port = "https".equalsIgnoreCase(scheme) ? 443 : 80;
+                }
+            }
+        }
+
+        String baseUrl;
+        if (("http".equalsIgnoreCase(scheme) && port == 80) || ("https".equalsIgnoreCase(scheme) && port == 443)) {
+            baseUrl = scheme + "://" + serverName + "/wado-rs";
+        } else {
+            baseUrl = scheme + "://" + serverName + ":" + port + "/wado-rs";
+        }
 
         String jsonArrayInner = instances.stream().map(instance -> {
             byte[] payload = objectStorageService.read(instance);
