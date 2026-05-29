@@ -57,10 +57,14 @@ public class S3CompatibleStorageProvider implements ObjectStorageProvider {
             // Try to check/create bucket to ensure seamless out-of-the-box experience
             String bucket = s3Config.getBucket();
             try {
-                s3Client.headBucket(HeadBucketRequest.builder().bucket(bucket).build());
-            } catch (NoSuchBucketException | NoSuchKeyException e) {
-                s3Client.createBucket(CreateBucketRequest.builder().bucket(bucket).build());
-                System.out.println("[S3 Storage] Created missing bucket: " + bucket);
+                try {
+                    s3Client.headBucket(HeadBucketRequest.builder().bucket(bucket).build());
+                } catch (NoSuchBucketException | NoSuchKeyException e) {
+                    s3Client.createBucket(CreateBucketRequest.builder().bucket(bucket).build());
+                    System.out.println("[S3 Storage] Created missing bucket: " + bucket);
+                }
+            } catch (Exception bucketEx) {
+                System.err.println("[S3 Storage] Failed to check or create bucket (continuing anyway): " + bucketEx.getMessage());
             }
         } catch (Exception exception) {
             System.err.println("[S3 Storage] Failed to initialize official S3 Client, falling back to mock mode. Reason: " + exception.getMessage());
