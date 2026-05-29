@@ -37,13 +37,31 @@ public class S3CompatibleStorageProvider implements ObjectStorageProvider {
         }
         try {
             DicomPacsProperties.S3 s3Config = properties.getS3();
-            AwsBasicCredentials credentials = AwsBasicCredentials.create(s3Config.getAccessKey(), s3Config.getSecretKey());
+            software.amazon.awssdk.auth.credentials.AwsCredentialsProvider credentialsProvider;
+            if (s3Config.getAccessKey() == null || s3Config.getAccessKey().isBlank()
+                    || "anonymous".equalsIgnoreCase(s3Config.getAccessKey())
+                    || "none".equalsIgnoreCase(s3Config.getAccessKey())) {
+                credentialsProvider = software.amazon.awssdk.auth.credentials.AnonymousCredentialsProvider.create();
+            } else {
+                credentialsProvider = StaticCredentialsProvider.create(
+                        AwsBasicCredentials.create(s3Config.getAccessKey(), s3Config.getSecretKey()));
+            }
+
             this.s3Client = S3Client.builder()
                     .endpointOverride(URI.create(s3Config.getEndpoint()))
-                    .credentialsProvider(StaticCredentialsProvider.create(credentials))
+                    .credentialsProvider(credentialsProvider)
                     .region(Region.of(s3Config.getRegion()))
                     .serviceConfiguration(b -> b.pathStyleAccessEnabled(s3Config.isPathStyleAccess()))
                     .build();
+            
+            // Try to check/create bucket to ensure seamless out-of-the-box experience
+            String bucket = s3Config.getBucket();
+            try {
+                s3Client.headBucket(HeadBucketRequest.builder().bucket(bucket).build());
+            } catch (NoSuchBucketException | NoSuchKeyException e) {
+                s3Client.createBucket(CreateBucketRequest.builder().bucket(bucket).build());
+                System.out.println("[S3 Storage] Created missing bucket: " + bucket);
+            }
         } catch (Exception exception) {
             System.err.println("[S3 Storage] Failed to initialize official S3 Client, falling back to mock mode. Reason: " + exception.getMessage());
             this.mockMode = true;

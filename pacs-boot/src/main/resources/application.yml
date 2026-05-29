@@ -15,6 +15,7 @@ spring:
         format_sql: true
   flyway:
     enabled: true
+    validate-on-migrate: false
   threads:
     virtual:
       enabled: true
@@ -31,6 +32,14 @@ dicom:
     local-port: 11112
     storage-dir: .data\storage
     file-path-pattern: "{00100020}\\{0020000D}\\{0020000E}\\{00080018}.dcm"
+    storage-provider: s3
+    s3:
+      endpoint: http://seaweedfs.zhzcc.top:8333
+      bucket: pacs-storage
+      access-key: anonymous
+      secret-key: anonymous
+      region: us-east-1
+      path-style-access: true
     idle-timeout: 1200000
     db-type: h2
     netty:
