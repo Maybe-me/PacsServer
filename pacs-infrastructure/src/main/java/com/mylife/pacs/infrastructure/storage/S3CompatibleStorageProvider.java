@@ -87,18 +87,15 @@ public class S3CompatibleStorageProvider implements ObjectStorageProvider {
 
         if (!mockMode) {
             try {
-                // Perform direct putObject. We catch errors to seamlessly fallback if remote is unreachable in tests.
                 s3Client.putObject(PutObjectRequest.builder()
                         .bucket(bucket)
                         .key(storageKey)
                         .build(), RequestBody.fromBytes(payload));
             } catch (Exception exception) {
-                System.err.println("[S3 Storage] Remote S3 endpoint unreachable. Falling back to in-memory simulated mode. Key: " + storageKey + ", Error: " + exception.getMessage());
-                this.mockMode = true;
+                System.err.println("[S3 Storage] S3 putObject failed. Key: " + storageKey + ", Error: " + exception.getMessage());
+                throw new IllegalStateException("Failed to write to S3 storage", exception);
             }
-        }
-
-        if (mockMode) {
+        } else {
             mockStorage.put(bucket + "/" + storageKey, payload);
         }
 
@@ -119,17 +116,18 @@ public class S3CompatibleStorageProvider implements ObjectStorageProvider {
                         .key(normalizedKey)
                         .build());
                 return objectBytes.asByteArray();
+            } catch (NoSuchKeyException exception) {
+                System.err.println("[S3 Storage] S3 Key not found (404): " + normalizedKey);
+                throw exception;
             } catch (Exception exception) {
-                System.err.println("[S3 Storage] GetObject failed, trying mock fallback. Key: " + normalizedKey + ", Error: " + exception.getMessage());
-                this.mockMode = true;
+                System.err.println("[S3 Storage] S3 getObject failed. Key: " + normalizedKey + ", Error: " + exception.getMessage());
+                throw new IllegalStateException("Failed to read S3 storage object", exception);
             }
         }
 
-        if (mockMode) {
-            byte[] mockData = mockStorage.get(bucket + "/" + normalizedKey);
-            if (mockData != null) {
-                return mockData;
-            }
+        byte[] mockData = mockStorage.get(bucket + "/" + normalizedKey);
+        if (mockData != null) {
+            return mockData;
         }
 
         throw new IllegalStateException("Failed to read stored S3 object: " + normalizedKey);
@@ -152,16 +150,12 @@ public class S3CompatibleStorageProvider implements ObjectStorageProvider {
             } catch (NoSuchKeyException exception) {
                 return false;
             } catch (Exception exception) {
-                System.err.println("[S3 Storage] HeadObject failed, trying mock fallback. Key: " + normalizedKey + ", Error: " + exception.getMessage());
-                this.mockMode = true;
+                System.err.println("[S3 Storage] S3 headObject failed. Key: " + normalizedKey + ", Error: " + exception.getMessage());
+                return false;
             }
         }
 
-        if (mockMode) {
-            return mockStorage.containsKey(bucket + "/" + normalizedKey);
-        }
-
-        return false;
+        return mockStorage.containsKey(bucket + "/" + normalizedKey);
     }
 
     @Override
@@ -178,13 +172,13 @@ public class S3CompatibleStorageProvider implements ObjectStorageProvider {
                         .key(normalizedKey)
                         .build());
                 return;
+            } catch (NoSuchKeyException exception) {
+                System.err.println("[S3 Storage] S3 Key to delete not found: " + normalizedKey);
             } catch (Exception exception) {
-                System.err.println("[S3 Storage] DeleteObject failed, trying mock fallback. Key: " + normalizedKey + ", Error: " + exception.getMessage());
-                this.mockMode = true;
+                System.err.println("[S3 Storage] S3 deleteObject failed. Key: " + normalizedKey + ", Error: " + exception.getMessage());
+                throw new IllegalStateException("Failed to delete S3 storage object", exception);
             }
-        }
-
-        if (mockMode) {
+        } else {
             mockStorage.remove(bucket + "/" + normalizedKey);
         }
     }
