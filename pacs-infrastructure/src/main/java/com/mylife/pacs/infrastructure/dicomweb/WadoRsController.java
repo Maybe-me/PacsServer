@@ -54,7 +54,7 @@ public class WadoRsController {
                 ).stream()
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "DICOM instance not found"));
-        byte[] payload = objectStorageService.read(instance);
+        byte[] payload = readInstancePayload(instance);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/dicom"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + sopInstanceUid + ".dcm\"")
@@ -116,7 +116,7 @@ public class WadoRsController {
         }
 
         String jsonArrayInner = instances.stream().map(instance -> {
-            byte[] payload = objectStorageService.read(instance);
+            byte[] payload = readInstancePayload(instance);
             return dicomJsonConverter.convertToJsonMetadata(payload, baseUrl, studyInstanceUid, seriesInstanceUid, instance.sopInstanceUid());
         }).collect(Collectors.joining(","));
 
@@ -136,7 +136,7 @@ public class WadoRsController {
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "DICOM instance not found"));
 
-        byte[] payload = objectStorageService.read(instance);
+        byte[] payload = readInstancePayload(instance);
 
         // Construct multipart/related response containing the full DICOM file bytes as a single frame part.
         // @cornerstonejs/dicom-image-loader's wadors loader can parse a DICOM file from this chunk.
@@ -154,5 +154,23 @@ public class WadoRsController {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .body(fullMultipart);
+    }
+
+    private byte[] readInstancePayload(PacsInstance instance) {
+        try {
+            return objectStorageService.read(instance);
+        } catch (Exception e) {
+            Throwable cause = e;
+            while (cause != null) {
+                String className = cause.getClass().getName();
+                if (className.equals("software.amazon.awssdk.services.s3.model.NoSuchKeyException") ||
+                        className.contains("NoSuchKeyException") ||
+                        (cause.getMessage() != null && cause.getMessage().contains("The specified key does not exist"))) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "DICOM instance file not found in storage", e);
+                }
+                cause = cause.getCause();
+            }
+            throw e;
+        }
     }
 }
