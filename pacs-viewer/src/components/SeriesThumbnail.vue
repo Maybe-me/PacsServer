@@ -68,6 +68,14 @@ function renderToCanvas(canvas, image) {
 
 onMounted(async () => {
   try {
+    const normModality = (props.modality || '').trim().toUpperCase()
+    const NON_IMAGE_MODALITIES = new Set(['DOC', 'SR', 'ECG', 'ES'])
+    if (NON_IMAGE_MODALITIES.has(normModality)) {
+      loading.value = false
+      error.value = true // Will display modality text placeholder
+      return
+    }
+
     const instances = await listInstances(props.studyInstanceUid, props.seriesInstanceUid)
     if (cancelled || !instances?.length) {
       if (!instances?.length) error.value = true
@@ -75,6 +83,14 @@ onMounted(async () => {
       return
     }
     const instance = instances[0]
+    
+    // Check if instance actually has a valid wadoUri
+    if (!instance.wadoUri) {
+      error.value = true
+      loading.value = false
+      return
+    }
+
     const imageId = buildWadoImageId(instance)
     await initializeCornerstone()
     if (cancelled) { loading.value = false; return }
