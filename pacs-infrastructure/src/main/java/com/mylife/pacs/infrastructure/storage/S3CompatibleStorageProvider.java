@@ -38,21 +38,32 @@ public class S3CompatibleStorageProvider implements ObjectStorageProvider {
         try {
             DicomPacsProperties.S3 s3Config = properties.getS3();
             software.amazon.awssdk.auth.credentials.AwsCredentialsProvider credentialsProvider;
+            software.amazon.awssdk.core.client.config.ClientOverrideConfiguration overrideConfig = null;
             if (s3Config.getAccessKey() == null || s3Config.getAccessKey().isBlank()
                     || "anonymous".equalsIgnoreCase(s3Config.getAccessKey())
                     || "none".equalsIgnoreCase(s3Config.getAccessKey())) {
                 credentialsProvider = software.amazon.awssdk.auth.credentials.AnonymousCredentialsProvider.create();
+                overrideConfig = software.amazon.awssdk.core.client.config.ClientOverrideConfiguration.builder()
+                        .putAdvancedOption(
+                                software.amazon.awssdk.core.client.config.SdkAdvancedClientOption.SIGNER,
+                                new software.amazon.awssdk.core.signer.NoOpSigner())
+                        .build();
             } else {
                 credentialsProvider = StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(s3Config.getAccessKey(), s3Config.getSecretKey()));
             }
 
-            this.s3Client = S3Client.builder()
+            software.amazon.awssdk.services.s3.S3ClientBuilder builder = S3Client.builder()
                     .endpointOverride(URI.create(s3Config.getEndpoint()))
                     .credentialsProvider(credentialsProvider)
                     .region(Region.of(s3Config.getRegion()))
-                    .serviceConfiguration(b -> b.pathStyleAccessEnabled(s3Config.isPathStyleAccess()))
-                    .build();
+                    .serviceConfiguration(b -> b.pathStyleAccessEnabled(s3Config.isPathStyleAccess()));
+
+            if (overrideConfig != null) {
+                builder.overrideConfiguration(overrideConfig);
+            }
+
+            this.s3Client = builder.build();
             
             // Try to check/create bucket to ensure seamless out-of-the-box experience
             String bucket = s3Config.getBucket();
